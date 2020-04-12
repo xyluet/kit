@@ -110,7 +110,6 @@ func NewSyncLogger(logger Logger) Logger {
 // progress, the calling goroutine blocks until the syncLogger is available.
 func (l *syncLogger) Log(keyvals ...interface{}) error {
 	l.mu.Lock()
-	err := l.logger.Log(keyvals...)
-	l.mu.Unlock()
-	return err
+	defer l.mu.Unlock()
+	return l.logger.Log(keyvals...)
 }
